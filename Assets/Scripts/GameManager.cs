@@ -1,25 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
+
+    public GameObject LangPanel;
+    public Button b_StartPanel;
+    public GameObject StayTransportPanel;
+    public VideoClip Plane;
+    public VideoClip Car;
+    public VideoClip Trane;
+    public VideoPlayer VideoPlayer;
 
     public Button b_Uzb;
     public Button b_Rus;
     
     public Transform ParentPpoints;
     public List<Transform> Points = new List<Transform>();
-    public GameObject DirPrefab;
 
-    public Image TransportPanel;
-    public Transform TransportObject;
-    public List<Sprite> FonTransport = new List<Sprite>();
-    public List<Sprite> Transport = new List<Sprite>();
+    public Transform TransportParent;
 
-    public GameObject StayTransportPanel;
+    public TMP_Text Log;
+    public TMP_Text LogVector;
     
     
     private OSCClass _oscClass;
@@ -27,11 +34,14 @@ public class GameManager : MonoBehaviour
     private List<Vector3> points3 = new List<Vector3>();
     private List<Vector3> points4 = new List<Vector3>();
     private List<Vector3> points5 = new List<Vector3>();
-    
+
+    private float _timer;
+
     void Start()
     {
         b_Uzb.onClick.AddListener(OnLangUzb);
         b_Rus.onClick.AddListener(OnLangRus);
+        b_StartPanel.onClick.AddListener(OnStartClick);
         _oscClass = GetComponent<OSCClass>();
         List<MeshRenderer> mesh = ParentPpoints.GetComponentsInChildren<MeshRenderer>().ToList();
         foreach (var meshRenderer in mesh)
@@ -40,9 +50,45 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log(Points.Count);
         _oscClass.Init();
+        points3.Add(Vector3.zero);
+        points3.Add(Vector3.zero);
+        points3.Add(Vector3.zero);
+        points5.Add(Vector3.zero);
+        points5.Add(Vector3.zero);
+        points5.Add(Vector3.zero);
+        points5.Add(Vector3.zero);
+        points5.Add(Vector3.zero);
+        points4.Add(Vector3.zero);
+        points4.Add(Vector3.zero);
+        points4.Add(Vector3.zero);
+        points4.Add(Vector3.zero);
+        OffAllPlane();
     }
 
-    
+    private void OnStartClick()
+    {
+        LangPanel.SetActive(true);
+    }
+
+    private void OffAllPlane()
+    {
+        LangPanel.SetActive(false);
+        StayTransportPanel.SetActive(false);
+        TransportParent.gameObject.SetActive(false);
+        VideoPlayer.Stop();
+        if (CurrentLang == 1)
+        {
+            _oscClass.MySendMessage("slide_Standby");
+        }
+
+        if (CurrentLang==2)
+        {
+            _oscClass.MySendMessage("slide_Standby");
+        }
+        
+    }
+
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -57,11 +103,22 @@ public class GameManager : MonoBehaviour
             if (Points.Count == 5) GetDirection5(vector3s);
         }
 
-        
+        if (Input.anyKey)
+        {
+            _timer = Time.time;
+        }
+
+        if (LangPanel.activeSelf && Time.time - _timer > 30f)
+        {
+            OffAllPlane();
+        }
+
+        Log.text = Input.touchCount.ToString();
     }
 
     private void FixedUpdate()
     {
+        if(!StayTransportPanel.activeSelf) return;
         if (Input.touchCount == 3)
         {
             List<Vector3> vector3s = new List<Vector3>();
@@ -73,7 +130,10 @@ public class GameManager : MonoBehaviour
             Vector3 middleNew = GetMiddlePoint(vector3s);
             Vector3 middleOld = GetMiddlePoint(points3);
 
-            if ((middleNew - middleOld).magnitude > 1f)
+            LogVector.text = middleNew.ToString();
+            LogVector.text += (middleNew - middleOld).magnitude;
+            
+            if ((middleNew - middleOld).magnitude > 0.1f)
             {
                 points3.Clear();
                 points3 = new List<Vector3>(vector3s);
@@ -118,6 +178,12 @@ public class GameManager : MonoBehaviour
                 GetDirection5(points5);
             }
         }
+        
+        if (Input.touchCount < 3)
+        {
+            TransportParent.gameObject.SetActive(false);
+            VideoPlayer.Stop();
+        }
     }
 
     private void GetDirection3(List<Vector3> points)
@@ -128,22 +194,28 @@ public class GameManager : MonoBehaviour
         float langht2 = (points[1] - points[2]).magnitude;
         float langht3 = (points[2] - points[0]).magnitude;
 
+        Vector2 dir = Vector2.zero;
         if (langht1 < langht2 && langht1 < langht3)
         {
-            Vector2 dir = points[2] - middle;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            Instantiate(DirPrefab, middle, Quaternion.AngleAxis(angle, Vector3.forward));
+            dir = points[2] - middle;
         }
         if (langht2 < langht1 && langht2 < langht3)
         {
-            Vector2 dir = points[0] - middle;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            Instantiate(DirPrefab, middle, Quaternion.AngleAxis(angle, Vector3.forward));
+            dir = points[0] - middle;
         }
         if (langht3 < langht1 && langht3 < langht2)
         {
-            Vector2 dir = points[1] - middle;
-            CreateTransport(dir, middle, FonTransport[0], Transport[0]);
+            dir = points[1] - middle;
+        }
+        
+        if (CurrentLang == 1)
+        {
+            CreateTransport(dir, middle, Plane, "slide_Air_uzb");
+        }
+
+        if (CurrentLang==2)
+        {
+            CreateTransport(dir, middle, Plane, "slide_Air_ru");
         }
     }
 
@@ -164,7 +236,15 @@ public class GameManager : MonoBehaviour
         }
 
         dir = middle - vector3;
-        CreateTransport(dir, middle, FonTransport[1], Transport[1]);
+        if (CurrentLang == 1)
+        {
+            CreateTransport(dir, middle, Car, "slide_Car_uzb");
+        }
+
+        if (CurrentLang==2)
+        {
+            CreateTransport(dir, middle, Car, "slide_Car_ru");
+        }
     }
     
     private void GetDirection5(List<Vector3> points)
@@ -185,17 +265,28 @@ public class GameManager : MonoBehaviour
 
         dir = middle - vector3;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        CreateTransport(dir, middle, FonTransport[2], Transport[2]);
+        if (CurrentLang == 1)
+        {
+            CreateTransport(dir, middle, Trane, "slide_Train_uzb");
+        }
+
+        if (CurrentLang==2)
+        {
+            CreateTransport(dir, middle, Trane, "slide_Train_ru");
+        }
+
+        
     }
 
-    private void CreateTransport(Vector2 direction, Vector3 position, Sprite fon, Sprite transport)
+    private void CreateTransport(Vector2 direction, Vector3 position, VideoClip clip, string mess)
     {
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        TransportObject.gameObject.SetActive(true);
-        TransportObject.position = position;
-        TransportObject.localRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        TransportPanel.sprite = fon;
-        TransportObject.GetComponent<Image>().sprite = transport;
+        TransportParent.gameObject.SetActive(true);
+        TransportParent.position = position;
+        TransportParent.localRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        VideoPlayer.clip = clip;
+        if(!VideoPlayer.isPlaying) VideoPlayer.Play();
+        _oscClass.MySendMessage(mess);
     }
 
     private Vector3 GetMiddlePoint(List<Vector3> points)

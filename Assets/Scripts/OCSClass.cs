@@ -108,7 +108,8 @@ public class OSCClass : MonoBehaviour
         script.commands.Add(new CommandsClass("slide_Air_uzb", "/composition/layers/1/clips/1/connect"));
         script.commands.Add(new CommandsClass("slide_Car_uzb", "/composition/layers/1/clips/2/connect"));
         script.commands.Add(new CommandsClass("slide_Train_uzb", "/composition/layers/1/clips/3/connect"));
-        script.commands.Add(new CommandsClass("slide_Standby", "/composition/layers/1/clips/4/connect"));
+        script.commands.Add(new CommandsClass("slide_Standby_ru", "/composition/layers/1/clips/4/connect"));
+        script.commands.Add(new CommandsClass("slide_Standby_uzb", "/composition/layers/1/clips/4/connect"));
 
         string json = JsonUtility.ToJson(script);
         
