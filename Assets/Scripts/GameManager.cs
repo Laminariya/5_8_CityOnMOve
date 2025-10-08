@@ -27,6 +27,14 @@ public class GameManager : MonoBehaviour
 
     public TMP_Text Log;
     public TMP_Text LogVector;
+
+    public TMP_Text StartPanelText;
+    public string RusText;
+    public string UzbText;
+
+    public TMP_Text StayMaket;
+    public string RusStayMaket;
+    public string UzbStayMaket;
     
     
     private OSCClass _oscClass;
@@ -39,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        CurrentLang = 1;
         b_Uzb.onClick.AddListener(OnLangUzb);
         b_Rus.onClick.AddListener(OnLangRus);
         b_StartPanel.onClick.AddListener(OnStartClick);
@@ -62,6 +71,7 @@ public class GameManager : MonoBehaviour
         points4.Add(Vector3.zero);
         points4.Add(Vector3.zero);
         points4.Add(Vector3.zero);
+        ChangeText();
         OffAllPlane();
     }
 
@@ -304,11 +314,28 @@ public class GameManager : MonoBehaviour
     {
         CurrentLang = 0;
         StayTransportPanel.SetActive(true);
+        ChangeText();
     }
 
     private void OnLangRus()
     {
         CurrentLang = 1;
         StayTransportPanel.SetActive(true);
+        ChangeText();
+    }
+
+    private void ChangeText()
+    {
+        if (CurrentLang == 0)
+        {
+            StartPanelText.text = UzbText;
+            StayMaket.text = UzbStayMaket;
+        }
+
+        if (CurrentLang == 1)
+        {
+            StartPanelText.text = RusText;
+            StayMaket.text = RusStayMaket;
+        }
     }
 }
