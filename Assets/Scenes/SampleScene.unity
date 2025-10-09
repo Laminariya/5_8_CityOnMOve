@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &253724353
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1010,9 +1010,9 @@ MonoBehaviour:
   LangPanel: {fileID: 673096344}
   b_StartPanel: {fileID: 1002886935}
   StayTransportPanel: {fileID: 276454829}
-  Plane: {fileID: 32900000, guid: 5faefbfda2b2483478655eb3eb44b63e, type: 3}
-  Car: {fileID: 32900000, guid: 0bed0036e8ef8aa4fb00a2cfb50ed377, type: 3}
-  Trane: {fileID: 32900000, guid: 405cca01c306d4644a0c51560c361410, type: 3}
+  Plane: {fileID: 32900000, guid: b2c9a8063a7c6ba478f24a68830b607e, type: 3}
+  Car: {fileID: 32900000, guid: 2e07e869ac7478e47afecd276ef045b9, type: 3}
+  Trane: {fileID: 32900000, guid: 4c954e99ec25cf644be329063c2bdd2c, type: 3}
   VideoPlayer: {fileID: 935514091}
   b_Uzb: {fileID: 790805724}
   b_Rus: {fileID: 377263088}
@@ -1536,11 +1536,11 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 935514089}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 0bed0036e8ef8aa4fb00a2cfb50ed377, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: b2c9a8063a7c6ba478f24a68830b607e, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: 601257595f9dc804499fa8036f505f5b, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: ab7879413dfb39c4b94ecc4b2f47cfa6, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
@@ -1582,7 +1582,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 601257595f9dc804499fa8036f505f5b, type: 2}
+  m_Texture: {fileID: 8400000, guid: ab7879413dfb39c4b94ecc4b2f47cfa6, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1614,7 +1614,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &939589824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5bcf9454156cbe24c9791a56cc29df66, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 316769289353fd74c847a4928be8fdb7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2675,7 +2675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2030473650
 RectTransform:
   m_ObjectHideFlags: 0

@@ -86,12 +86,12 @@ public class GameManager : MonoBehaviour
         StayTransportPanel.SetActive(false);
         TransportParent.gameObject.SetActive(false);
         VideoPlayer.Stop();
-        if (CurrentLang == 1)
+        if (CurrentLang == 0)
         {
             _oscClass.MySendMessage("slide_Standby");
         }
 
-        if (CurrentLang==2)
+        if (CurrentLang==1)
         {
             _oscClass.MySendMessage("slide_Standby");
         }
@@ -103,14 +103,15 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            List<Vector3> vector3s = new List<Vector3>();
-            foreach (var point in Points)
-            {
-                vector3s.Add(point.position);
-            }
-            if (Points.Count == 3) GetDirection3(vector3s);
-            if (Points.Count == 4) GetDirection4(vector3s);
-            if (Points.Count == 5) GetDirection5(vector3s);
+            // List<Vector3> vector3s = new List<Vector3>();
+            // foreach (var point in Points)
+            // {
+            //     vector3s.Add(point.position);
+            // }
+            // if (Points.Count == 3) GetDirection3(vector3s);
+            // if (Points.Count == 4) GetDirection4(vector3s);
+            // if (Points.Count == 5) GetDirection5(vector3s);
+            CreateTransport(Vector2.one, Vector3.one, Car, "slide_Car_uzb");
         }
 
         if (Input.anyKey)
@@ -122,13 +123,8 @@ public class GameManager : MonoBehaviour
         {
             OffAllPlane();
         }
-
-        Log.text = Input.touchCount.ToString();
-    }
-
-    private void FixedUpdate()
-    {
-        if(!StayTransportPanel.activeSelf) return;
+        
+         if(!StayTransportPanel.activeSelf) return;
         if (Input.touchCount == 3)
         {
             List<Vector3> vector3s = new List<Vector3>();
@@ -151,7 +147,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        if (Input.touchCount == 4)
+        else if (Input.touchCount == 4)
         {
             List<Vector3> vector3s = new List<Vector3>();
             for (int i = 0; i < 4; i++)
@@ -170,7 +166,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        if (Input.touchCount == 5)
+        else if (Input.touchCount == 5)
         {
             List<Vector3> vector3s = new List<Vector3>();
             for (int i = 0; i < 5; i++)
@@ -189,11 +185,18 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        if (Input.touchCount < 3)
+        else if (Input.touchCount < 3)
         {
             TransportParent.gameObject.SetActive(false);
             VideoPlayer.Stop();
         }
+
+        Log.text = Input.touchCount.ToString();
+    }
+
+    private void FixedUpdate()
+    {
+       
     }
 
     private void GetDirection3(List<Vector3> points)
@@ -218,12 +221,12 @@ public class GameManager : MonoBehaviour
             dir = points[1] - middle;
         }
         
-        if (CurrentLang == 1)
+        if (CurrentLang == 0)
         {
             CreateTransport(dir, middle, Plane, "slide_Air_uzb");
         }
 
-        if (CurrentLang==2)
+        if (CurrentLang==1)
         {
             CreateTransport(dir, middle, Plane, "slide_Air_ru");
         }
@@ -246,12 +249,12 @@ public class GameManager : MonoBehaviour
         }
 
         dir = middle - vector3;
-        if (CurrentLang == 1)
+        if (CurrentLang == 0)
         {
             CreateTransport(dir, middle, Car, "slide_Car_uzb");
         }
 
-        if (CurrentLang==2)
+        if (CurrentLang==1)
         {
             CreateTransport(dir, middle, Car, "slide_Car_ru");
         }
@@ -275,12 +278,12 @@ public class GameManager : MonoBehaviour
 
         dir = middle - vector3;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        if (CurrentLang == 1)
+        if (CurrentLang == 0)
         {
             CreateTransport(dir, middle, Trane, "slide_Train_uzb");
         }
 
-        if (CurrentLang==2)
+        if (CurrentLang==1)
         {
             CreateTransport(dir, middle, Trane, "slide_Train_ru");
         }
