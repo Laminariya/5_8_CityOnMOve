@@ -30,27 +30,27 @@ public class OSCClass : MonoBehaviour
 
     public void Init()
     {
-        // try
-        // {
-        //     string text = File.ReadAllText(Directory.GetCurrentDirectory()+_nameConfig);
-        //     jsonData = new JsonData();
-        //     jsonData = JsonUtility.FromJson<JsonData>(text);
-        //     _ip = jsonData.ip;
-        //     _port = jsonData.port;
-        // }
-        // catch (FileNotFoundException)
-        // {
-        //     Debug.Log("Файл не найден!");
-        // }
-        // catch (Exception ex)
-        // {
-        //     Debug.Log($"Ошибка: {ex.Message}");
-        // }
+        try
+        {
+            string text = File.ReadAllText(Directory.GetCurrentDirectory()+_nameConfig);
+            jsonData = new JsonData();
+            jsonData = JsonUtility.FromJson<JsonData>(text);
+            _ip = jsonData.ip;
+            _port = jsonData.port;
+        }
+        catch (FileNotFoundException)
+        {
+            Debug.Log("Файл не найден!");
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Ошибка: {ex.Message}");
+        }
 
         //CreateJson();
-        StartCoroutine(LoadConfig());
-        
-        udpClient.Connect(_ip, _port);
+        //StartCoroutine(LoadConfig());
+       
+        udpClient.Connect(jsonData.ip, jsonData.port);
     }
     
     IEnumerator LoadConfig()
@@ -73,6 +73,7 @@ public class OSCClass : MonoBehaviour
     
         jsonData = JsonUtility.FromJson<JsonData>(jsonString);
         Debug.Log("Game version: " + jsonData.ip);
+        
     }
 
     public async Task MySendMessage(string id)
@@ -101,7 +102,7 @@ public class OSCClass : MonoBehaviour
         JsonData script = new JsonData();
         script.ip = "127.0.0.1";
         script.port = 5555;
-        script.delay = 20;
+        script.delayFrame = 5;
         script.commands.Add(new CommandsClass("slide_Air_ru", "/composition/layers/2/clips/1/connect"));
         script.commands.Add(new CommandsClass("slide_Car_ru", "/composition/layers/2/clips/2/connect"));
         script.commands.Add(new CommandsClass("slide_Train_ru", "/composition/layers/2/clips/3/connect"));
@@ -126,7 +127,7 @@ public class JsonData
 {
     public string ip;
     public int port;
-    public float delay;
+    public int delayFrame;
     public List<CommandsClass> commands = new List<CommandsClass>();
 }
 

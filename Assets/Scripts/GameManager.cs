@@ -6,16 +6,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+
 public class GameManager : MonoBehaviour
 {
-
-    public GameObject LangPanel;
+    
     public Button b_StartPanel;
     public GameObject StayTransportPanel;
-    public VideoClip Plane;
-    public VideoClip Car;
-    public VideoClip Trane;
-    public VideoPlayer VideoPlayer;
+    //public VideoClip Plane;
+    //public VideoClip Car;
+    //public VideoClip Trane;
+    //public VideoPlayer VideoPlayer;
+    public Sprite Plane;
+    public Sprite Car;
+    public Sprite Trane;
+    public Image TransportRoadImage;
+    public Image CloudsImage1;
+    public Image CloudsImage2;
 
     public Button b_Uzb;
     public Button b_Rus;
@@ -37,21 +45,30 @@ public class GameManager : MonoBehaviour
     public string UzbStayMaket;
     
     
-    private OSCClass _oscClass;
-    private int CurrentLang;
+    public OSCClass _oscClass;
+    private CTAClass _ctaClass;
+    public int CurrentLang;
     private List<Vector3> points3 = new List<Vector3>();
     private List<Vector3> points4 = new List<Vector3>();
     private List<Vector3> points5 = new List<Vector3>();
 
     private float _timer;
+    private int _countFrame;
+    private int _currentTouch;
+    private int _NumberVideo;
+    private bool _isPlayVideo;
+    private int DeltaFrame = 5;
 
     void Start()
     {
-        CurrentLang = 1;
+        CurrentLang = 0;
+        InitTransportPanel();
         b_Uzb.onClick.AddListener(OnLangUzb);
         b_Rus.onClick.AddListener(OnLangRus);
         b_StartPanel.onClick.AddListener(OnStartClick);
         _oscClass = GetComponent<OSCClass>();
+        _ctaClass = FindObjectOfType<CTAClass>(true);
+        _ctaClass.Init(this);
         List<MeshRenderer> mesh = ParentPpoints.GetComponentsInChildren<MeshRenderer>().ToList();
         foreach (var meshRenderer in mesh)
         {
@@ -77,23 +94,29 @@ public class GameManager : MonoBehaviour
 
     private void OnStartClick()
     {
-        LangPanel.SetActive(true);
+        
     }
 
-    private void OffAllPlane()
+    private void InitTransportPanel()
     {
-        LangPanel.SetActive(false);
+        _countFrame = 0;
+        _NumberVideo = 0;
+        _isPlayVideo = false;
+    }
+
+    public void OffAllPlane()
+    {
         StayTransportPanel.SetActive(false);
         TransportParent.gameObject.SetActive(false);
-        VideoPlayer.Stop();
+        //VideoPlayer.Stop();
         if (CurrentLang == 0)
         {
-            _oscClass.MySendMessage("slide_Standby");
+            _oscClass.MySendMessage("slide_Standby_uzb");
         }
 
         if (CurrentLang==1)
         {
-            _oscClass.MySendMessage("slide_Standby");
+            _oscClass.MySendMessage("slide_Standby_ru");
         }
         
     }
@@ -101,32 +124,33 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // List<Vector3> vector3s = new List<Vector3>();
-            // foreach (var point in Points)
-            // {
-            //     vector3s.Add(point.position);
-            // }
-            // if (Points.Count == 3) GetDirection3(vector3s);
-            // if (Points.Count == 4) GetDirection4(vector3s);
-            // if (Points.Count == 5) GetDirection5(vector3s);
-            CreateTransport(Vector2.one, Vector3.one, Car, "slide_Car_uzb");
-        }
-
         if (Input.anyKey)
         {
             _timer = Time.time;
         }
 
-        if (LangPanel.activeSelf && Time.time - _timer > 30f)
+        if (StayTransportPanel.activeSelf && !_ctaClass.gameObject.activeSelf && Time.time - _timer > 15f)
         {
-            OffAllPlane();
+            _ctaClass.Show();
         }
-        
-         if(!StayTransportPanel.activeSelf) return;
+
+        if (!StayTransportPanel.activeSelf) return;
+
+
         if (Input.touchCount == 3)
         {
+            if (_currentTouch == Input.touchCount)
+            {
+                _countFrame++;
+            }
+            else
+            {
+                _currentTouch = Input.touchCount;
+                _countFrame = 0;
+            }
+
+            if (_countFrame < _oscClass.jsonData.delayFrame) return;
+
             List<Vector3> vector3s = new List<Vector3>();
             for (int i = 0; i < 3; i++)
             {
@@ -138,17 +162,30 @@ public class GameManager : MonoBehaviour
 
             LogVector.text = middleNew.ToString();
             LogVector.text += (middleNew - middleOld).magnitude;
-            
+
             if ((middleNew - middleOld).magnitude > 0.1f)
             {
                 points3.Clear();
                 points3 = new List<Vector3>(vector3s);
                 GetDirection3(points3);
             }
+
         }
-        
+
         else if (Input.touchCount == 4)
         {
+            if (_currentTouch == Input.touchCount)
+            {
+                _countFrame++;
+            }
+            else
+            {
+                _currentTouch = Input.touchCount;
+                _countFrame = 0;
+            }
+
+            if (_countFrame < _oscClass.jsonData.delayFrame) return;
+
             List<Vector3> vector3s = new List<Vector3>();
             for (int i = 0; i < 4; i++)
             {
@@ -165,9 +202,21 @@ public class GameManager : MonoBehaviour
                 GetDirection4(points4);
             }
         }
-        
+
         else if (Input.touchCount == 5)
         {
+            if (_currentTouch == Input.touchCount)
+            {
+                _countFrame++;
+            }
+            else
+            {
+                _currentTouch = Input.touchCount;
+                _countFrame = 0;
+            }
+
+            if (_countFrame < _oscClass.jsonData.delayFrame) return;
+
             List<Vector3> vector3s = new List<Vector3>();
             for (int i = 0; i < 5; i++)
             {
@@ -184,20 +233,27 @@ public class GameManager : MonoBehaviour
                 GetDirection5(points5);
             }
         }
-        
-        else if (Input.touchCount < 3)
-        {
-            TransportParent.gameObject.SetActive(false);
-            VideoPlayer.Stop();
-        }
 
+        else if (Input.touchCount == 0)
+        {
+            if (_currentTouch == Input.touchCount)
+            {
+                _countFrame++;
+            }
+            else
+            {
+                _currentTouch = Input.touchCount;
+                _countFrame = 0;
+            }
+
+            if (_countFrame < _oscClass.jsonData.delayFrame) return;
+            TransportParent.gameObject.SetActive(false);
+            InitTransportPanel();
+        }
+        
         Log.text = Input.touchCount.ToString();
     }
 
-    private void FixedUpdate()
-    {
-       
-    }
 
     private void GetDirection3(List<Vector3> points)
     {
@@ -223,13 +279,16 @@ public class GameManager : MonoBehaviour
         
         if (CurrentLang == 0)
         {
-            CreateTransport(dir, middle, Plane, "slide_Air_uzb");
+            CreateTransport(dir, middle, Plane, "slide_Air_uzb", 3);
         }
 
         if (CurrentLang==1)
         {
-            CreateTransport(dir, middle, Plane, "slide_Air_ru");
+            CreateTransport(dir, middle, Plane, "slide_Air_ru",3);
         }
+
+        _NumberVideo = 3;
+        _isPlayVideo = true;
     }
 
     private void GetDirection4(List<Vector3> points)
@@ -247,17 +306,20 @@ public class GameManager : MonoBehaviour
                 vector3 = point;
             }
         }
-
+        
         dir = middle - vector3;
         if (CurrentLang == 0)
         {
-            CreateTransport(dir, middle, Car, "slide_Car_uzb");
+            CreateTransport(dir, middle, Car, "slide_Car_uzb", 4);
         }
 
         if (CurrentLang==1)
         {
-            CreateTransport(dir, middle, Car, "slide_Car_ru");
+            CreateTransport(dir, middle, Car, "slide_Car_ru", 4);
         }
+        
+        _NumberVideo = 4;
+        _isPlayVideo = true;
     }
     
     private void GetDirection5(List<Vector3> points)
@@ -275,30 +337,33 @@ public class GameManager : MonoBehaviour
                 vector3 = point;
             }
         }
-
+        
         dir = middle - vector3;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         if (CurrentLang == 0)
         {
-            CreateTransport(dir, middle, Trane, "slide_Train_uzb");
+            CreateTransport(dir, middle, Trane, "slide_Train_uzb", 5);
         }
 
         if (CurrentLang==1)
         {
-            CreateTransport(dir, middle, Trane, "slide_Train_ru");
+            CreateTransport(dir, middle, Trane, "slide_Train_ru", 5);
         }
-
         
+        _NumberVideo = 5;
+        _isPlayVideo = true;
     }
 
-    private void CreateTransport(Vector2 direction, Vector3 position, VideoClip clip, string mess)
+    private void CreateTransport(Vector2 direction, Vector3 position, Sprite sprite, string mess, int numberVideo)
     {
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         TransportParent.gameObject.SetActive(true);
         TransportParent.position = position;
         TransportParent.localRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        VideoPlayer.clip = clip;
-        if(!VideoPlayer.isPlaying) VideoPlayer.Play();
+        TransportRoadImage.sprite = sprite;
+        CloudsImage1.enabled = sprite==Plane;
+        CloudsImage2.enabled = sprite==Plane;
+        if(_NumberVideo==numberVideo) return;
         _oscClass.MySendMessage(mess);
     }
 
@@ -340,5 +405,13 @@ public class GameManager : MonoBehaviour
             StartPanelText.text = RusText;
             StayMaket.text = RusStayMaket;
         }
+    }
+    
+    public string GetAddLang(string id)
+    {
+        string _id = "";
+        if(CurrentLang==0) _id = id + "_uzb";
+        if(CurrentLang==1) _id = id + "_ru";
+        return _id;
     }
 }

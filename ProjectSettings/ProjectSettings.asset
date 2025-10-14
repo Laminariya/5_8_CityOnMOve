@@ -728,8 +728,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: 5_8_CityOnMove
-  metroPackageVersion: 
+  metroPackageName: 58CityOnMove
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -737,7 +737,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: 5_8_CityOnMove
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: 5_8_CityOnMove
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -802,7 +802,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 0
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 8fdaf55d-a307-4738-aec9-a2feb1926e15
   framebufferDepthMemorylessMode: 0
