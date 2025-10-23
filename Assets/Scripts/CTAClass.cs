@@ -11,6 +11,7 @@ public class CTAClass : MonoBehaviour
     public TMP_Text TimeText;
     public List<string> Langs = new List<string>();
     public TMP_Text Discription;
+    public Button b_Home;
     
     private Button button;
     private float _time = 0;
@@ -22,7 +23,15 @@ public class CTAClass : MonoBehaviour
         _manager = manager;
         button = GetComponent<Button>();
         button.onClick.AddListener(Hide);
+        b_Home.onClick.AddListener(OnHomeClick);
         Hide();
+    }
+
+    private void OnHomeClick()
+    {
+        _manager.OffAllPlane();
+        Hide();
+        _manager.ChangeCTAText.Show();
     }
 
     public void Show()

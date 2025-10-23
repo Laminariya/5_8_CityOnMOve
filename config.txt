@@ -30,6 +30,10 @@
 		{
 			"key": "slide_Standby",
 			"address": "/composition/layers/1/clips/4/connect"
+		},
+		{
+			"key": "slide_HideVideo",
+			"address": "/composition/layers/1/clips/4/connect"
 		}
 	]
 }

@@ -105,7 +105,8 @@ public class GameManager : MonoBehaviour
     {
         _countFrame = 0;
         _NumberVideo = 0;
-        _isPlayVideo = false;
+        _isPlayVideo = false; //slide_HideVideo
+        _oscClass.MySendMessage("slide_HideVideo");
     }
 
     public void OffAllPlane()
