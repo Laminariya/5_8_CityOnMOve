@@ -28,11 +28,7 @@
 			"address": "/composition/layers/1/clips/3/connect"
 		},
 		{
-			"key": "slide_Standby_ru",
-			"address": "/composition/layers/1/clips/4/connect"
-		},
-		{
-			"key": "slide_Standby_uzb",
+			"key": "slide_Standby",
 			"address": "/composition/layers/1/clips/4/connect"
 		}
 	]

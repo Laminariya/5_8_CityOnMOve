@@ -8,6 +8,7 @@ using UnityEngine.Video;
 
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
     
     public OSCClass _oscClass;
     private CTAClass _ctaClass;
+    public ChangeCTAText ChangeCTAText;
     public int CurrentLang;
     private List<Vector3> points3 = new List<Vector3>();
     private List<Vector3> points4 = new List<Vector3>();
@@ -67,15 +69,17 @@ public class GameManager : MonoBehaviour
         b_Rus.onClick.AddListener(OnLangRus);
         b_StartPanel.onClick.AddListener(OnStartClick);
         _oscClass = GetComponent<OSCClass>();
+        _oscClass.Init();
         _ctaClass = FindObjectOfType<CTAClass>(true);
         _ctaClass.Init(this);
+        ChangeCTAText = FindObjectOfType<ChangeCTAText>(true);
         List<MeshRenderer> mesh = ParentPpoints.GetComponentsInChildren<MeshRenderer>().ToList();
         foreach (var meshRenderer in mesh)
         {
             Points.Add(meshRenderer.transform);
         }
         Debug.Log(Points.Count);
-        _oscClass.Init();
+        
         points3.Add(Vector3.zero);
         points3.Add(Vector3.zero);
         points3.Add(Vector3.zero);
@@ -109,16 +113,7 @@ public class GameManager : MonoBehaviour
         StayTransportPanel.SetActive(false);
         TransportParent.gameObject.SetActive(false);
         //VideoPlayer.Stop();
-        if (CurrentLang == 0)
-        {
-            _oscClass.MySendMessage("slide_Standby_uzb");
-        }
-
-        if (CurrentLang==1)
-        {
-            _oscClass.MySendMessage("slide_Standby_ru");
-        }
-        
+        _oscClass.MySendMessage("slide_Standby");
     }
 
 

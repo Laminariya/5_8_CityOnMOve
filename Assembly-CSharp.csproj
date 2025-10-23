@@ -50,7 +50,6 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\OCSClass.cs" />
     <Compile Include="Assets\Scripts\ChangeCTAText.cs" />
-    <None Include="Assets\StreamingAssets\config.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Library\PackageCache\com.unity.burst@1.8.21\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />

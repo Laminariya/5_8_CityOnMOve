@@ -26,7 +26,17 @@ public class ChangeCTAText : MonoBehaviour
         _textJuicer.Text = Text[_currentTextIndex];
         _textJuicer.Update();
     }
-    
+
+    public void Show()
+    {
+        _currentTextIndex = 4;
+        if(_coroutine != null)
+            StopCoroutine(_coroutine);
+        _coroutine = StartCoroutine(ChangeText());
+        _timer = Time.time;
+        //manager._oscClass.MySendMessage("slide_Standby");
+    }
+
     void Update()
     {
         if (!ParentObject.activeSelf && Time.time - _timer >= Delay)
@@ -56,7 +66,6 @@ public class ChangeCTAText : MonoBehaviour
         manager.CurrentLang = _currentTextIndex;
         
         _textJuicer.Text = Text[_currentTextIndex];
-        manager._oscClass.MySendMessage(manager.GetAddLang("slide_Standby"));
         
         progress = 0f;
         while (progress < 0.999f)

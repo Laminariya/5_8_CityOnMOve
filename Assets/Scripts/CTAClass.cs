@@ -48,6 +48,7 @@ public class CTAClass : MonoBehaviour
             {
                 _manager.OffAllPlane();
                 Hide();
+                _manager.ChangeCTAText.Show();
             }
         }
     }
