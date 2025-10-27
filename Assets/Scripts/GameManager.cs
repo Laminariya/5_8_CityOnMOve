@@ -61,10 +61,12 @@ public class GameManager : MonoBehaviour
     private bool _isPlayVideo;
     private int DeltaFrame = 5;
 
+    private bool _isHide;
+
     void Start()
     {
         CurrentLang = 0;
-        InitTransportPanel();
+        _isHide = false;
         b_Uzb.onClick.AddListener(OnLangUzb);
         b_Rus.onClick.AddListener(OnLangRus);
         b_StartPanel.onClick.AddListener(OnStartClick);
@@ -93,6 +95,7 @@ public class GameManager : MonoBehaviour
         points4.Add(Vector3.zero);
         points4.Add(Vector3.zero);
         ChangeText();
+        InitTransportPanel();
         OffAllPlane();
     }
 
@@ -135,6 +138,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.touchCount == 3)
         {
+            _isHide = false;
             if (_currentTouch == Input.touchCount)
             {
                 _countFrame++;
@@ -170,6 +174,7 @@ public class GameManager : MonoBehaviour
 
         else if (Input.touchCount == 4)
         {
+            _isHide = false;
             if (_currentTouch == Input.touchCount)
             {
                 _countFrame++;
@@ -201,6 +206,7 @@ public class GameManager : MonoBehaviour
 
         else if (Input.touchCount == 5)
         {
+            _isHide = false;
             if (_currentTouch == Input.touchCount)
             {
                 _countFrame++;
@@ -244,7 +250,11 @@ public class GameManager : MonoBehaviour
 
             if (_countFrame < _oscClass.jsonData.delayFrame) return;
             TransportParent.gameObject.SetActive(false);
-            InitTransportPanel();
+            if (!_isHide)
+            {
+                InitTransportPanel();
+                _isHide = true;
+            }
         }
         
         Log.text = Input.touchCount.ToString();
@@ -378,11 +388,13 @@ public class GameManager : MonoBehaviour
     {
         CurrentLang = 0;
         StayTransportPanel.SetActive(true);
+        _isHide = false;
         ChangeText();
     }
 
     private void OnLangRus()
     {
+        _isHide = false;
         CurrentLang = 1;
         StayTransportPanel.SetActive(true);
         ChangeText();
